@@ -10,17 +10,41 @@ async function getUsers(hlm, isi) {
   const akhir = hlm * isi;
   const users = await usersRepository.getUsers();
 
+  const hlmsblm = hlm > 1;
+
   if (hlm && isi) {
-    const hasil = [];
+    const pagination = [];
     for (let i = awal; i < akhir && i < users.length; i++) {
       const user = users[i];
-      hasil.push({
+      pagination.push({
         id: user.id,
         name: user.name,
         email: user.email,
       });
     }
-    return hasil;
+
+    const results = [];
+    for (let i = 0; i < users.length; i += 1) {
+      const user = users[i];
+      results.push({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      });
+    }
+    const count = results.length;
+    const totalhlm = Math.ceil(count / isi);
+    const hlmslnjt = hlm < totalhlm;
+
+    return {
+      page_number: hlm,
+      page_size: isi,
+      count: count,
+      total_pages: totalhlm,
+      has_previous_page: hlmsblm,
+      has_next_page: hlmslnjt,
+      data: pagination,
+    };
   }
 
   const results = [];
