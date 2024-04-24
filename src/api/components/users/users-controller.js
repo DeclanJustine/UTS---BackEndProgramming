@@ -10,8 +10,8 @@ const { errorResponder, errorTypes } = require('../../../core/errors');
  */
 async function getUsers(request, response, next) {
   try {
-    const halaman = parseInt(request.query.page_number);
-    const isiPerHalaman = parseInt(request.query.page_size);
+    const halaman = parseInt(request.query.page_number); // variabel untuk membaca halaman yang di request
+    const isiPerHalaman = parseInt(request.query.page_size); // variabel untuk membaca isi halaman yang di request di query
 
     const users = await usersService.getUsers(halaman, isiPerHalaman);
 

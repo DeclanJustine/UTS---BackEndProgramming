@@ -12,6 +12,7 @@ async function getUsers(hlm, isi) {
 
   const hlmsblm = hlm > 1;
 
+  // if condition jika halaman dan batas halaman terdapat di query maka ini yang akan dijalananin
   if (hlm && isi) {
     const pagination = [];
     for (let i = awal; i < akhir && i < users.length; i++) {
