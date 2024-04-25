@@ -5,7 +5,7 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
  * Get list of users
  * @returns {Array}
  */
-async function getUsers(hlm, isi, search, sorting) {
+async function getUsers(hlm, isi, search, sort) {
   const awal = (hlm - 1) * isi;
   const akhir = hlm * isi;
   let users = await usersRepository.getUsers();
@@ -15,6 +15,21 @@ async function getUsers(hlm, isi, search, sorting) {
     const [searchAwal, searchAkhir] = search.split(':');
     if (searchAwal === 'email' && searchAkhir) {
       users = users.filter((user) => user.email.includes(searchAkhir));
+    }
+  }
+
+  if (sort) {
+    const [sortAwal, sortAkhir] = sort.split(':');
+    if (sortAwal === 'email' && sortAkhir === 'desc') {
+      users.sort((a, b) => {
+        if (a < b) {
+          return 1;
+        } else if (a > b) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
     }
   }
 
