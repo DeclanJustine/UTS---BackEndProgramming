@@ -5,10 +5,18 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
  * Get list of users
  * @returns {Array}
  */
-async function getUsers(hlm, isi) {
+async function getUsers(hlm, isi, search, sorting) {
   const awal = (hlm - 1) * isi;
   const akhir = hlm * isi;
-  const users = await usersRepository.getUsers();
+  let users = await usersRepository.getUsers();
+
+  // Sistem search yang saya buat adalah case sensitive
+  if (search) {
+    const [searchAwal, searchAkhir] = search.split(':');
+    if (searchAwal === 'email' && searchAkhir) {
+      users = users.filter((user) => user.email.includes(searchAkhir));
+    }
+  }
 
   // if condition jika halaman dan batas halaman terdapat di query maka ini yang akan dijalananin
   if (hlm && isi) {
