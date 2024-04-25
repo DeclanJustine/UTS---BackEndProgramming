@@ -24,16 +24,7 @@ async function getUsers(hlm, isi) {
       });
     }
 
-    const results = [];
-    for (let i = 0; i < users.length; i += 1) {
-      const user = users[i];
-      results.push({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      });
-    }
-    const count = results.length;
+    const count = users.length;
     const totalhlm = Math.ceil(count / isi);
     const hlmslnjt = hlm < totalhlm;
 
