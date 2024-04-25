@@ -10,8 +10,6 @@ async function getUsers(hlm, isi) {
   const akhir = hlm * isi;
   const users = await usersRepository.getUsers();
 
-  const hlmsblm = hlm > 1;
-
   // if condition jika halaman dan batas halaman terdapat di query maka ini yang akan dijalananin
   if (hlm && isi) {
     const pagination = [];
@@ -26,6 +24,7 @@ async function getUsers(hlm, isi) {
 
     const count = users.length;
     const totalhlm = Math.ceil(count / isi);
+    const hlmsblm = hlm > 1;
     const hlmslnjt = hlm < totalhlm;
 
     return {
