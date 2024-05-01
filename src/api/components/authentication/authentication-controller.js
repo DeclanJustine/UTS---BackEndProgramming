@@ -22,7 +22,7 @@ async function login(request, response, next) {
       ) {
         throw errorResponder(
           errorTypes.FORBIDDEN,
-          `${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} login limit reached. Please try again 30 minute later`
+          `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} login limit reached. Please try again 30 minute later`
         );
       } else {
         // Reset kesempatan login jika sudah lebih dari 30 menit
