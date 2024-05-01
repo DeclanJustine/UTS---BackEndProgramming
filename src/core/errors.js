@@ -62,6 +62,11 @@ const errorTypes = {
     status: 403,
     code: 'BAD_ROLE_ERROR',
   },
+  AVOID_SPAM: {
+    description: 'Login Limiter',
+    status: 666,
+    code: 'AVOID_SPAM',
+  },
   INVALID_CREDENTIALS: {
     description: 'Invalid credentials',
     status: 403,
