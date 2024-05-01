@@ -47,10 +47,8 @@ async function login(request, response, next) {
         const errorMessage = `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.`;
         throw errorResponder(errorTypes.AVOID_SPAM, errorMessage);
       }
-    }
-
-    // Untuk reset limitnya jika telah berhasil login
-    if (loginLimiter[email]) {
+    } else {
+      // Untuk reset limitnya jika telah berhasil login
       loginLimiter[email] = { attempts: 0, loginTerakhirnya: null };
     }
 
