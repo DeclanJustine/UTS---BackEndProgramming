@@ -14,14 +14,13 @@ async function login(request, response, next) {
   const { email, password } = request.body;
 
   try {
-    // Check if the user's login attempts count has exceeded the limit
+    // Cek Login jika lebih dari 5
     if (loginLimiter[email] && loginLimiter[email].attempts >= 5) {
-      // Check if the last login attempt was within the time window
       if (Date.now() - loginLimiter[email].loginTerakhirnya < 30 * 60 * 1000) {
         const errorMessage = `${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} login limit reached. Please try again 30 minute later`;
         throw errorResponder(errorTypes.FORBIDDEN, errorMessage);
       } else {
-        // Reset login attempts if more than 30 minutes have passed since last attempt
+        // Reset kesempatan login jika sudah lebih dari 30 menit
         loginLimiter[email] = { attempts: 0, loginTerakhirnya: null };
       }
     }
@@ -33,7 +32,7 @@ async function login(request, response, next) {
     );
 
     if (!loginSuccess) {
-      // Increment login attempts count and update last attempt time
+      // Untuk menambahkan attempts
       if (!loginLimiter[email]) {
         loginLimiter[email] = { attempts: 1, loginTerakhirnya: Date.now() };
       } else {
