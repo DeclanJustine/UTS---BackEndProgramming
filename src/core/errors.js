@@ -63,7 +63,7 @@ const errorTypes = {
     code: 'BAD_ROLE_ERROR',
   },
   AVOID_SPAM: {
-    description: 'Login Limiter',
+    description: 'To avoid spam i make login limiter',
     status: 666,
     code: 'AVOID_SPAM',
   },
