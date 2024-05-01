@@ -10,14 +10,19 @@ async function getUsers(hlm, isi, search, sort) {
   const akhir = hlm * isi;
   let users = await usersRepository.getUsers();
 
-  // Sistem search yang saya buat adalah case sensitive
+  // Sistem search yang saya buat adalah case sensitive (Huruf besar dan kecil mempengaruhi)
   if (search) {
     const [searchAwal, searchAkhir] = search.split(':');
     if (searchAwal === 'email' && searchAkhir) {
       users = users.filter((user) => user.email.includes(searchAkhir));
+    } else if (searchAwal === 'name' && searchAkhir) {
+      users = users.filter((user) => user.name.includes(searchAkhir));
+    } else if (searchAwal === 'id' && searchAkhir) {
+      users = users.filter((user) => user.id.includes(searchAkhir));
     }
   }
 
+  // Untuk mengurutkan secara descending atau ascending
   if (sort) {
     const [sortAwal, sortAkhir] = sort.split(':');
     if (sortAwal === 'email' && sortAkhir === 'desc') {
@@ -70,7 +75,6 @@ async function getUsers(hlm, isi, search, sort) {
       email: user.email,
     });
   }
-
   return results;
 }
 

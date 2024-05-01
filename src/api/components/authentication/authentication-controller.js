@@ -40,6 +40,7 @@ async function login(request, response, next) {
         loginLimiter[email].loginTerakhirnya = Date.now();
       }
 
+      // Untuk menampilkan message di bruno
       if (loginLimiter[email].attempts >= 5) {
         const errorMessage = `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.Limit Reached`;
         throw errorResponder(errorTypes.AVOID_SPAM, errorMessage);
