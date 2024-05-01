@@ -16,9 +16,14 @@ async function login(request, response, next) {
   try {
     // Cek Login jika lebih dari 5
     if (loginLimiter[email] && loginLimiter[email].attempts >= 5) {
-      if (Date.now() - loginLimiter[email].loginTerakhirnya < 30 * 60 * 1000) {
-        const errorMessage = `${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} login limit reached. Please try again 30 minute later`;
-        throw errorResponder(errorTypes.FORBIDDEN, errorMessage);
+      if (
+        Date.now() - loginLimiter[email].loginTerakhirnya <
+        30 * 60 * 1000 //  Menandakan 30 menit
+      ) {
+        throw errorResponder(
+          errorTypes.FORBIDDEN,
+          `${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} login limit reached. Please try again 30 minute later`
+        );
       } else {
         // Reset kesempatan login jika sudah lebih dari 30 menit
         loginLimiter[email] = { attempts: 0, loginTerakhirnya: null };
@@ -40,13 +45,17 @@ async function login(request, response, next) {
         loginLimiter[email].loginTerakhirnya = Date.now();
       }
 
-      // Untuk menampilkan message di bruno
+      // Untuk menampilkan message dan error type di bruno
       if (loginLimiter[email].attempts >= 5) {
-        const errorMessage = `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.Limit Reached`;
-        throw errorResponder(errorTypes.AVOID_SPAM, errorMessage);
+        throw errorResponder(
+          errorTypes.AVOID_SPAM,
+          `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.Limit Reached`
+        );
       } else {
-        const errorMessage = `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.`;
-        throw errorResponder(errorTypes.AVOID_SPAM, errorMessage);
+        throw errorResponder(
+          errorTypes.AVOID_SPAM,
+          `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} gagal login. Attempt = ${loginLimiter[email].attempts}.`
+        );
       }
     } else {
       // Untuk reset limitnya jika telah berhasil login
