@@ -40,10 +40,15 @@ async function getUser(id) {
     accNum: userBank.accID,
     name: userBank.name,
     email: userBank.email,
-    menu: '/info , /changePassword, /tarikUang, /depoUang, /transfer ',
+    menu: '/info , /changePassword, /withdraw, /deposit, /transfer ',
   };
 }
 
+/**
+ * Get user info detail
+ * @param {string} id - User ID
+ * @returns {Object}
+ */
 async function getInfo(id) {
   const userBank = await bankRepository.getInfo(id);
 
@@ -91,6 +96,12 @@ async function createUser(name, email, password, nominal) {
   return true;
 }
 
+/**
+ * Check username and password for login.
+ * @param {string} email - Email
+ * @param {string} password - Password
+ * @returns {object} An object containing, among others, the JWT token if the email and password are matched. Otherwise returns null.
+ */
 async function checkLoginBankCredentials(email, password) {
   const userBank = await bankRepository.getUserBankByEmail(email);
 
@@ -142,6 +153,14 @@ async function updateUser(id, name, email) {
   return true;
 }
 
+/**
+ * Update existing user balances by withdraw
+ * @param {string} id
+ * @param {string} name
+ * @param {string} email
+ * @param {string} nominalTarik
+ * @returns
+ */
 async function updateBalance(id, name, email, nominalTarik) {
   const userBank = await bankRepository.getUser(id);
 
@@ -165,6 +184,14 @@ async function updateBalance(id, name, email, nominalTarik) {
   }
 }
 
+/**
+ * Update existing user balances by deposit
+ * @param {string} id
+ * @param {string} name
+ * @param {string} email
+ * @param {string} nominalSetor
+ * @returns
+ */
 async function updateBalances(id, name, email, nominalSetor) {
   const userBank = await bankRepository.getUser(id);
 
@@ -187,6 +214,13 @@ async function updateBalances(id, name, email, nominalSetor) {
   }
 }
 
+/**
+ * Update existing user balances by transfer the balance from account to account
+ * @param {string} id
+ * @param {string} toId
+ * @param {string} nominalTransfer
+ * @returns
+ */
 async function transferNominal(id, toId, nominalTransfer) {
   try {
     const fromAcc = await bankRepository.getInfo(id);
@@ -197,14 +231,22 @@ async function transferNominal(id, toId, nominalTransfer) {
     const toAccs = toAcc.accID;
     const nominalFromAcc = parseInt(nominal) - parseInt(nominalTransfer);
     const nominalToAcc = parseInt(nominalTo) + parseInt(nominalTransfer);
-    await bankRepository.updateTransfer(fromAccs, nominalFromAcc);
-    await bankRepository.updateTransfer(toAccs, nominalToAcc);
+    await bankRepository.updateBalance(fromAccs, nominalFromAcc);
+    await bankRepository.updateBalance(toAccs, nominalToAcc);
   } catch (error) {
     return null;
   }
   return true;
 }
 
+/**
+ * Give a message note after transfering the balance
+ * @param {string} id
+ * @param {string} toId
+ * @param {string} nominalTransfer
+ * @param {string} description
+ * @returns
+ */
 async function transferNote(id, toId, nominalTransfer, description) {
   try {
     const fromAcc = await bankRepository.getInfo(id);
@@ -217,7 +259,7 @@ async function transferNote(id, toId, nominalTransfer, description) {
       transaction_id: ids,
       from: `ID : [${fromAcc.accID}], Name : ${fromAcc.name}`,
       to: `ID : [${toAcc.accID}], Name : ${toAcc.name}`,
-      nominal: nominalTransfer,
+      nominal: nominalTransfer.toString(),
       date: `[${new Date().toISOString().replace('T', ' ').split('.')[0]}]`,
       description: description,
     };

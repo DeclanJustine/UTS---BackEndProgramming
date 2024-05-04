@@ -9,13 +9,18 @@ async function getUsers() {
   return Bank.find({});
 }
 
+/**
+ * Get all info of users
+ * @param {object} id
+ * @returns {Promise}
+ */
 async function getInfo(id) {
   return Bank.findById(id);
 }
 
 /**
- * Get user detail
- * @param {string} id - User ID
+ * Get a list info of user by id
+ * @param {object} id
  * @returns {Promise}
  */
 async function getUser(id) {
@@ -39,6 +44,11 @@ async function createUser(accID, name, email, password, nominal) {
   });
 }
 
+/**
+ * Get a list of user by email
+ * @param {string} email
+ * @returns
+ */
 async function getUserBankByEmail(email) {
   return Bank.findOne({ email });
 }
@@ -64,6 +74,14 @@ async function updateUser(id, name, email) {
   );
 }
 
+/**
+ * Update existing user balance
+ * @param {string} id - User ID
+ * @param {string} name - Name
+ * @param {string} email - Email
+ * @param {string} nominalAkhir - Balance
+ * @returns {Promise}
+ */
 async function updateBalance(id, name, email, nominalAkhir) {
   return Bank.updateOne(
     {
@@ -79,7 +97,13 @@ async function updateBalance(id, name, email, nominalAkhir) {
   );
 }
 
-async function updateTransfer(accID, nominalAkhir) {
+/**
+ * Update existing user balance
+ * @param {string} id - User ID
+ * @param {string} nominalAkhir - Balance
+ * @returns {Promise}
+ */
+async function updateBalance(accID, nominalAkhir) {
   return Bank.updateOne(
     {
       accID: accID,
@@ -130,6 +154,5 @@ module.exports = {
   changePassword,
   getInfo,
   updateBalance,
-  updateTransfer,
   getUserBankByEmail,
 };

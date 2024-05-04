@@ -19,6 +19,13 @@ async function getUsers(request, response, next) {
   }
 }
 
+/**
+ * Function for get all the info of user request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Return all the info of the object
+ */
 async function getInfo(request, response, next) {
   try {
     const userBank = await banksService.getInfo(request.params.id);
@@ -112,6 +119,13 @@ async function createUser(request, response, next) {
   }
 }
 
+/**
+ * Handle login request
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
 async function login(request, response, next) {
   const { email, password } = request.body;
 
@@ -198,6 +212,13 @@ async function updateUser(request, response, next) {
   }
 }
 
+/**
+ * Function for update the balance of user by withdraw money
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
 async function updateBalance(request, response, next) {
   try {
     const id = request.params.id;
@@ -224,6 +245,13 @@ async function updateBalance(request, response, next) {
   }
 }
 
+/**
+ * Function for update the balance of user by deposit money
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
 async function updateBalances(request, response, next) {
   try {
     const id = request.params.id;
@@ -243,6 +271,13 @@ async function updateBalances(request, response, next) {
   }
 }
 
+/**
+ * Function for update the balance of two users by transfer money
+ * @param {object} request - Express request object
+ * @param {object} response - Express response object
+ * @param {object} next - Express route middlewares
+ * @returns {object} Response object or pass an error to the next route
+ */
 async function transfer(request, response, next) {
   try {
     const id = request.body.id;

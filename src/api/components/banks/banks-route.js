@@ -13,7 +13,7 @@ module.exports = (app) => {
   // Get list of users
   route.get('/check', authenticationMiddleware, banksController.getUsers);
 
-  // Create user
+  // Create user account
   route.post(
     '/createAcc',
     authenticationMiddleware,
@@ -21,6 +21,7 @@ module.exports = (app) => {
     banksController.createUser
   );
 
+  // User login account
   route.post(
     '/login',
     authenticationMiddleware,
@@ -28,6 +29,7 @@ module.exports = (app) => {
     banksController.login
   );
 
+  // Transfer balance account to account
   route.post(
     '/login/:id/transfer',
     authenticationMiddleware,
@@ -52,16 +54,16 @@ module.exports = (app) => {
     banksController.updateUser
   );
 
-  // Tarik Uang mengurangi nominal
+  // Withdraw money to reduce balance
   route.put(
-    '/login/:id/tarikUang',
+    '/login/:id/withdraw',
     authenticationMiddleware,
     banksController.updateBalance
   );
 
-  // Setor Uang menambah nominal
+  // Deposit money to add balance
   route.put(
-    '/login/:id/depoUang',
+    '/login/:id/deposit',
     authenticationMiddleware,
     banksController.updateBalances
   );
