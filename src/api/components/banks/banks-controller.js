@@ -388,7 +388,9 @@ async function changePassword(request, response, next) {
       );
     }
 
-    return response.status(200).json({ id: request.params.id });
+    return response
+      .status(200)
+      .json({ id: request.params.id, message: `Password change successfully` });
   } catch (error) {
     return next(error);
   }
