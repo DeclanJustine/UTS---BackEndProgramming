@@ -10,7 +10,7 @@ let loginLimiter = {};
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function login(request, response, next) {
+async function loginUsers(request, response, next) {
   const { email, password } = request.body;
 
   try {
@@ -69,5 +69,5 @@ async function login(request, response, next) {
 }
 
 module.exports = {
-  login,
+  loginUsers,
 };

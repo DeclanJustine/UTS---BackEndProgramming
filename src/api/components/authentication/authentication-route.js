@@ -7,11 +7,11 @@ const celebrate = require('../../../core/celebrate-wrappers');
 const route = express.Router();
 
 module.exports = (app) => {
-  app.use('/authentication', route);
+  app.use('/authentication/login', route);
 
   route.post(
-    '/login',
-    celebrate(authenticationValidators.login),
-    authenticationControllers.login
+    '/users',
+    celebrate(authenticationValidators.loginUsers),
+    authenticationControllers.loginUsers
   );
 };

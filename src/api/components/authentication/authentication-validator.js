@@ -1,7 +1,7 @@
 const joi = require('joi');
 
 module.exports = {
-  login: {
+  loginUsers: {
     body: {
       email: joi.string().email().required().label('Email'),
       password: joi.string().required().label('Password'),

@@ -67,6 +67,21 @@ const errorTypes = {
     status: 666,
     code: 'AVOID_SPAM',
   },
+  MIN_TRANSACTION: {
+    description: `Your balance can't afford it`,
+    status: 999,
+    code: 'ERROR_TRANSACTION',
+  },
+  BANK_LIMITER: {
+    description: 'You just have 3 chance if failed you got blocked',
+    status: 666,
+    code: 'AVOID_HACKER',
+  },
+  NOMINAL_TIDAK_MEMENUHI: {
+    description: 'MINIMUM NOMINAL',
+    status: 777,
+    code: 'MIN_BALANCE',
+  },
   INVALID_CREDENTIALS: {
     description: 'Invalid credentials',
     status: 403,

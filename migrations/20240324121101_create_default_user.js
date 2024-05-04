@@ -1,16 +1,16 @@
 const logger = require('../src/core/logger')('api');
-const { User } = require('../src/models');
+const { Bank } = require('../src/models');
 const { hashPassword } = require('../src/utils/password');
 
-const name = 'Administrator';
-const email = 'admin@example.com';
+const name = 'Admin';
+const email = 'admins@example.com';
 const password = '123456';
 
 logger.info('Creating default users');
 
 (async () => {
   try {
-    const numUsers = await User.countDocuments({
+    const numUsers = await Bank.countDocuments({
       name,
       email,
     });
@@ -20,7 +20,7 @@ logger.info('Creating default users');
     }
 
     const hashedPassword = await hashPassword(password);
-    await User.create({
+    await Bank.create({
       name,
       email,
       password: hashedPassword,
