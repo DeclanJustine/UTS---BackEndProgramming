@@ -103,7 +103,7 @@ async function updateBalance(id, name, email, nominalAkhir) {
  * @param {string} nominalAkhir - Balance
  * @returns {Promise}
  */
-async function updateBalance(accID, nominalAkhir) {
+async function updateBalances(accID, nominalAkhir) {
   return Bank.updateOne(
     {
       accID: accID,
@@ -155,4 +155,5 @@ module.exports = {
   getInfo,
   updateBalance,
   getUserBankByEmail,
+  updateBalances,
 };

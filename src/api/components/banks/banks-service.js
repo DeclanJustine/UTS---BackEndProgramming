@@ -170,7 +170,7 @@ async function updateBalance(id, name, email, nominalTarik) {
   }
 
   try {
-    const nominalAkhir = userBank.nominal - nominalTarik;
+    const nominalAkhir = parseInt(userBank.nominal) - parseInt(nominalTarik);
     await bankRepository.updateBalance(id, name, email, nominalAkhir);
     return {
       id: userBank.id,
@@ -231,8 +231,8 @@ async function transferNominal(id, toId, nominalTransfer) {
     const toAccs = toAcc.accID;
     const nominalFromAcc = parseInt(nominal) - parseInt(nominalTransfer);
     const nominalToAcc = parseInt(nominalTo) + parseInt(nominalTransfer);
-    await bankRepository.updateBalance(fromAccs, nominalFromAcc);
-    await bankRepository.updateBalance(toAccs, nominalToAcc);
+    await bankRepository.updateBalances(fromAccs, nominalFromAcc);
+    await bankRepository.updateBalances(toAccs, nominalToAcc);
   } catch (error) {
     return null;
   }
