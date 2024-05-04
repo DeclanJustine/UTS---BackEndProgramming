@@ -341,7 +341,9 @@ async function deleteUser(request, response, next) {
       );
     }
 
-    return response.status(200).json({ id });
+    return response
+      .status(200)
+      .json({ id, message: 'Account has been deleted successfully' });
   } catch (error) {
     return next(error);
   }

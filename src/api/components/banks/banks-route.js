@@ -69,7 +69,11 @@ module.exports = (app) => {
   );
 
   // Delete user
-  route.delete('/:id', authenticationMiddleware, banksController.deleteUser);
+  route.delete(
+    '/login/:id/delete',
+    authenticationMiddleware,
+    banksController.deleteUser
+  );
 
   // Change password
   route.post(
