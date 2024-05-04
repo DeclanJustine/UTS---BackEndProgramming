@@ -131,12 +131,7 @@ async function login(request, response, next) {
 
   try {
     // Cek Login jika lebih dari 5
-    if (loginLimiter[email] && loginLimiter[email].attempts >= 3) {
-      throw errorResponder(
-        errorTypes.FORBIDDEN,
-        `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} has been blocked`
-      );
-    }
+    limitReached(email);
 
     // Check login credentials
     const loginSuccess = await banksService.checkLoginBankCredentials(
@@ -146,34 +141,76 @@ async function login(request, response, next) {
 
     if (!loginSuccess) {
       // Untuk menambahkan attempts
-      if (!loginLimiter[email]) {
-        loginLimiter[email] = { attempts: 1, loginTerakhirnya: Date.now() };
-      } else {
-        loginLimiter[email].attempts++;
-        loginLimiter[email].loginTerakhirnya = Date.now();
-      }
-
+      increaseAttempts(email);
       // Untuk menampilkan message dan error type di bruno
-      if (loginLimiter[email].attempts >= 3) {
-        throw errorResponder(
-          errorTypes.BANK_LIMITER,
-          `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} failed to login. Attempt = ${loginLimiter[email].attempts}. Your account has been blocked`
-        );
-      } else {
-        throw errorResponder(
-          errorTypes.BANK_LIMITER,
-          `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${email} failed to login. Attempt = ${loginLimiter[email].attempts}.`
-        );
-      }
+      throw errorResponder(
+        errorTypes.BANK_LIMITER,
+        errorMessage(email, loginLimiter[email].attempts)
+      );
     } else {
       // Untuk reset limitnya jika telah berhasil login
-      loginLimiter[email] = { attempts: 0, loginTerakhirnya: null };
+      resetAttempts(email);
     }
 
     return response.status(200).json(loginSuccess);
   } catch (error) {
     return next(error);
   }
+}
+
+/**
+ * Function for handle limited reach
+ * @param {string} email - User's email
+ */
+function limitReached(email) {
+  if (loginLimiter[email] && loginLimiter[email].attempts >= 3) {
+    const time = currentTime();
+    throw errorResponder(
+      errorTypes.FORBIDDEN,
+      `[${time}] User ${email} login limit reached. Your account has been suspended`
+    );
+  }
+}
+
+/**
+ * Function to increase login Attempt
+ * @param {string} email - User's email
+ */
+function increaseAttempts(email) {
+  if (!loginLimiter[email]) {
+    loginLimiter[email] = { attempts: 1, loginTerakhirnya: Date.now() };
+  } else {
+    loginLimiter[email].attempts++;
+    loginLimiter[email].loginTerakhirnya = Date.now();
+  }
+}
+
+/**
+ * Function to reset login attempts
+ * @param {string} email - User's email
+ */
+function resetAttempts(email) {
+  loginLimiter[email] = { attempts: 0, loginTerakhirnya: null };
+}
+
+/**
+ * Funtion for outputing the errorMessage
+ * @param {string} email - User's email
+ * @param {string} attempts - Login attempts
+ * @returns
+ */
+function errorMessage(email, attempts) {
+  const time = currentTime();
+  const messagePlus = attempts >= 3 ? '. Limit Reached' : '.';
+  return `[${time}] User ${email} gagal login. Attempt = ${attempts}${messagePlus}`;
+}
+
+/**
+ * Funtion to get a current time
+ * @returns current time
+ */
+function currentTime() {
+  return new Date().toISOString().replace('T', ' ').split('.')[0];
 }
 
 /**

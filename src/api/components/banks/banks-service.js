@@ -51,6 +51,7 @@ async function getUser(id) {
  */
 async function getInfo(id) {
   const userBank = await bankRepository.getInfo(id);
+  const time = currentTime();
 
   // User not found
   if (!userBank) {
@@ -63,7 +64,7 @@ async function getInfo(id) {
     name: userBank.name,
     email: userBank.email,
     nominal: userBank.nominal,
-    time: `[${new Date().toISOString().replace('T', ' ').split('.')[0]}]`,
+    time: `[${time}]`,
   };
 }
 
@@ -254,13 +255,14 @@ async function transferNote(id, toId, nominalTransfer, description) {
     const randNum1 = Math.floor(1 + Math.random() * 9000);
     const randNum2 = Math.floor(100 + Math.random() * 900);
     const ids = randNum1.toString() + randNum2.toString();
+    const time = currentTime();
 
     return {
       transaction_id: ids,
       from: `ID : [${fromAcc.accID}], Name : ${fromAcc.name}`,
       to: `ID : [${toAcc.accID}], Name : ${toAcc.name}`,
       nominal: nominalTransfer.toString(),
-      date: `[${new Date().toISOString().replace('T', ' ').split('.')[0]}]`,
+      date: `[${time}]`,
       description: description,
     };
   } catch (error) {
@@ -342,6 +344,14 @@ async function changePassword(userId, password) {
   }
 
   return true;
+}
+
+/**
+ * Funtion to get a current time
+ * @returns current time
+ */
+function currentTime() {
+  return new Date().toISOString().replace('T', ' ').split('.')[0];
 }
 
 module.exports = {
