@@ -129,9 +129,13 @@ async function createUser(request, response, next) {
 async function login(request, response, next) {
   const { email, password } = request.body;
 
+  // Set loginLimiterEmail and attempts based on email
+  const loginLimiterEmail = loginLimiter[email];
+  const attempts = loginLimiterEmail ? loginLimiterEmail.attempts + 1 : 1;
+
   try {
-    // Cek Login jika lebih dari 5
-    limitReached(email);
+    // Cek Login jika lebih dari 3
+    limitReached(loginLimiterEmail);
 
     // Check login credentials
     const loginSuccess = await banksService.checkLoginBankCredentials(
@@ -145,7 +149,7 @@ async function login(request, response, next) {
       // Untuk menampilkan message dan error type di bruno
       throw errorResponder(
         errorTypes.BANK_LIMITER,
-        errorMessage(email, loginLimiter[email].attempts)
+        errorMessage(email, attempts)
       );
     } else {
       // Untuk reset limitnya jika telah berhasil login
@@ -160,14 +164,13 @@ async function login(request, response, next) {
 
 /**
  * Function for handle limited reach
- * @param {string} email - User's email
+ * @param {object} loginLimiterEmail - Login limiter email object
  */
-function limitReached(email) {
-  if (loginLimiter[email] && loginLimiter[email].attempts >= 3) {
-    const time = currentTime();
+function limitReached(loginLimiterEmail) {
+  if (loginLimiterEmail && loginLimiterEmail.attempts >= 3) {
     throw errorResponder(
       errorTypes.FORBIDDEN,
-      `[${time}] User ${email} login limit reached. Your account has been suspended`
+      `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${loginLimiterEmail.email} login limit reached. Your account has been suspended`
     );
   }
 }
@@ -194,10 +197,10 @@ function resetAttempts(email) {
 }
 
 /**
- * Funtion for outputing the errorMessage
+ * Function for outputing the errorMessage
  * @param {string} email - User's email
- * @param {string} attempts - Login attempts
- * @returns
+ * @param {number} attempts - Login attempts
+ * @returns {string} Error message
  */
 function errorMessage(email, attempts) {
   const time = currentTime();
@@ -206,8 +209,8 @@ function errorMessage(email, attempts) {
 }
 
 /**
- * Funtion to get a current time
- * @returns current time
+ * Function to get current time
+ * @returns {string} Current time
  */
 function currentTime() {
   return new Date().toISOString().replace('T', ' ').split('.')[0];
