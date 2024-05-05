@@ -13,13 +13,13 @@ let loginLimiter = {};
 async function loginUsers(request, response, next) {
   const { email, password } = request.body;
 
-  // Set loginLimiterEmail and attempts based on email
-  const loginLimiterEmail = loginLimiter[email];
-  const attempts = loginLimiterEmail ? loginLimiterEmail.attempts + 1 : 1;
+  // Set loginLimit and attempts based on email
+  const loginLimit = loginLimiter[email];
+  const attempts = loginLimit ? loginLimit.attempts + 1 : 1;
 
   try {
     // Cek Login jika lebih dari 5
-    limitReached(loginLimiterEmail);
+    limitReached(loginLimit);
 
     // Check login credentials
     const loginSuccess = await authenticationServices.checkLoginCredentials(
@@ -48,21 +48,21 @@ async function loginUsers(request, response, next) {
 
 /**
  * Function for handle limited reach
- * @param {object} loginLimiterEmail - Login limiter email object
+ * @param {object} loginLimit - Login limiter email object
  */
-function limitReached(loginLimiterEmail) {
-  if (loginLimiterEmail && loginLimiterEmail.attempts >= 5) {
+function limitReached(loginLimit) {
+  if (loginLimit && loginLimit.attempts >= 5) {
     if (
-      Date.now() - loginLimiterEmail.loginTerakhirnya <
+      Date.now() - loginLimit.loginTerakhirnya <
       30 * 60 * 1000 //  Menandakan 30 menit
     ) {
       throw errorResponder(
         errorTypes.FORBIDDEN,
-        `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${loginLimiterEmail.email} login limit reached. Please try again 30 minute later`
+        `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${loginLimit.email} login limit reached. Please try again 30 minute later`
       );
     } else {
       // Reset kesempatan login jika sudah lebih dari 30 menit
-      resetAttempts(loginLimiterEmail.email);
+      resetAttempts(loginLimit.email);
     }
   }
 }

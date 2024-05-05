@@ -129,13 +129,13 @@ async function createUser(request, response, next) {
 async function login(request, response, next) {
   const { email, password } = request.body;
 
-  // Set loginLimiterEmail and attempts based on email
-  const loginLimiterEmail = loginLimiter[email];
-  const attempts = loginLimiterEmail ? loginLimiterEmail.attempts + 1 : 1;
+  // Set loginLimit and attempts based on email
+  const loginLimit = loginLimiter[email];
+  const attempts = loginLimit ? loginLimit.attempts + 1 : 1;
 
   try {
     // Cek Login jika lebih dari 3
-    limitReached(loginLimiterEmail);
+    limitReached(loginLimit);
 
     // Check login credentials
     const loginSuccess = await banksService.checkLoginBankCredentials(
@@ -164,13 +164,13 @@ async function login(request, response, next) {
 
 /**
  * Function for handle limited reach
- * @param {object} loginLimiterEmail - Login limiter email object
+ * @param {object} loginLimit - Login limiter email object
  */
-function limitReached(loginLimiterEmail) {
-  if (loginLimiterEmail && loginLimiterEmail.attempts >= 3) {
+function limitReached(loginLimit) {
+  if (loginLimit && loginLimit.attempts >= 3) {
     throw errorResponder(
       errorTypes.FORBIDDEN,
-      `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${loginLimiterEmail.email} login limit reached. Your account has been suspended`
+      `[${new Date().toISOString().replace('T', ' ').split('.')[0]}] User ${loginLimit.email} login limit reached. Your account has been suspended`
     );
   }
 }
